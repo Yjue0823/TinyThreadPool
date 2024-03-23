@@ -1,0 +1,3 @@
+/home/xdu/workplace/TinyThreadPool/build/CMakeFiles/TinyThreadPool.dir
+/home/xdu/workplace/TinyThreadPool/build/CMakeFiles/edit_cache.dir
+/home/xdu/workplace/TinyThreadPool/build/CMakeFiles/rebuild_cache.dir
