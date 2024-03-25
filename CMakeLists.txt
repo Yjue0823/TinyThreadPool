@@ -7,6 +7,7 @@ set(EXECUTABLE_OUTPUT_PATH ${SOURCE_DIR}/bin)
 
 set(SOURCE_LIST
     maintest.cpp
+    threadpool.cpp threadpool.h
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_LIST})

@@ -6,6 +6,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <atomic>
+#include <functional>
 
 // 线程模型
 enum class ThreadPoolMode{
@@ -23,7 +24,16 @@ private:
 // 线程池 工作线程的封装
 class Thread{
 public:
+    using ThreadFunc = std::function<void()>;
+    // Thread类 构造函数
+    Thread(ThreadFunc func); // 传入一个函数来构造我们的线程池中的 线程类
+    ~Thread();
+
+    // 线程函数启动入口
+    void start();
+
 private:
+    ThreadFunc func_;
 };
 
 // 线程池类型
@@ -37,10 +47,10 @@ public:
     ThreadPool& operator=(const Thread& pool) = delete;
 
     // 线程池启动
-    void start();
+    void start(int initThreadSize = 4);
 
     // 设置线程池的线程数量
-    void setThreadSize(int size);
+    // void setThreadSize(int size);
 
     // 线程池工作模式的设置
     void setThreadPoolMode(ThreadPoolMode mode);
@@ -52,8 +62,12 @@ public:
     void submitTask(std::shared_ptr<Task> sp);
 
 private:
+    // 线程池使用的函数
+    void threadFunc();
+
+private:
     // 线程容器
-    std::vector<Thread*> threadList_;
+    std::vector<std::shared_ptr<Thread>> threadList_;
     int initThreadSize_;
 
     // 任务队列
