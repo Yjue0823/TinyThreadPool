@@ -8,6 +8,46 @@
 #include <atomic>
 #include <functional>
 
+// Any 类型
+
+class Any{
+public:
+    Any() = default;
+    ~Any() = default;
+    // 因为该类成员是一个unique_ptr是没有拷贝构造和赋值的 所以要记得删掉 同时增加默认移动构造函数
+    Any(const Any& any) = delete;
+    Any& operator=(const Any& any) = delete;
+    Any(Any&& any) = default;
+    Any& operator=(Any&& any) = default;
+
+    template<typename T>
+    Any(T data) : base_(std::make_unique<Any::Deviren<T>>(data)){}
+    // Any类的类成员对象是一个unique_ptr智能指针
+    template<typename T>
+    T cast_(){
+        // 从driven_ptr中找到它所指的Driven对象，从他里面读取data成员变量
+        Any::Deviren<T> *pd = dynamic_cast<Any::Deviren<T>*>(base_.get());
+        if(pd == nullptr){
+            throw "type is not match!";
+        }
+        return pd->data_;
+    }
+private:
+    // 基类类型
+    class Base{
+    public:
+        virtual ~Base() = default;
+    };
+    template<typename T>
+    class Deviren : public Base{
+    public:
+        Deviren(T data): data_(data){}
+        T data_;
+    };
+private:
+    std::unique_ptr<Base> base_; // 基类指针指向派生类对象--》多态
+};
+
 // 线程模型
 enum class ThreadPoolMode{
     FIXED_MODE,
@@ -17,7 +57,7 @@ enum class ThreadPoolMode{
 // 线程池 任务提交的基类 抽象类
 class Task{
 public:
-    virtual void run() = 0;
+    virtual Any run() = 0;
 private:
 };
 

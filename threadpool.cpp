@@ -27,7 +27,7 @@ ThreadPool::~ThreadPool()
  */
 void ThreadPool::threadFunc()
 {
-    // for(;;) // 子线程中进行的死循环
+    for(;;) // 子线程中进行的死循环
     {
         std::shared_ptr<Task> task;
         {
@@ -42,6 +42,7 @@ void ThreadPool::threadFunc()
             // 从任务队列中取一个任务出来
             task = taskQue_.front();
             taskQue_.pop();
+            std::cout << taskQue_.size() << std::endl;
             taskSize_--;
             std::cout << "线程ID:" << std::this_thread::get_id() <<"成功获取任务" << std::endl;
 
@@ -131,6 +132,7 @@ void ThreadPool::submitTask(std::shared_ptr<Task> sp)
     // });
     // 如果有空余 把任务放入任务队列中
     taskQue_.emplace(sp);
+    std::cout << "任务提交成功" << std::endl;
     taskSize_++;
 
     // 新放了任务，任务队列肯定不空了，在notEmpty_上进行通知
